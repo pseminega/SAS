@@ -60,9 +60,9 @@ proc contents data=tsa.ClaimsImport varnum;
 run;
 ```
 
-![First20Rows.PNG](attachment:First20Rows.PNG)
-![ProcContent1.PNG](attachment:ProcContent1.PNG)
-![ProcContent2.PNG](attachment:ProcContent2.PNG)
+![First20Rows.PNG](data/First20Rows.PNG)
+![ProcContent1.PNG](data/ProcContent1.PNG)
+![ProcContent2.PNG](data/ProcContent2.PNG)
 
 ** Observations** : Here we can see that the Date_Received and Incident_Date columns are formatted as BEST 12 when they should be in a Date format.Close_Amount is also formatted as BEST 12 , we will format it as dollar.
 
@@ -187,7 +187,7 @@ run;
 title;
 ```
 
-![DateIssues.PNG](attachment:DateIssues.PNG)
+![DateIssues.PNG](data/DateIssues.PNG)
 
 ```sas
 /*2. How many claims per year of Incident_Date are in the overall data? Be sure to include a plot.*/
@@ -203,8 +203,8 @@ run;
 title;
 ```
 
-![ClaimsPerYear1.PNG](attachment:ClaimsPerYear1.PNG)
-![ClaimsPerYear2.PNG](attachment:ClaimsPerYear2.PNG)
+![ClaimsPerYear1.PNG](data/ClaimsPerYear1.PNG)
+![ClaimsPerYear2.PNG](data/ClaimsPerYear2.PNG)
 
 **Observations**: We can easily see in the visualization that 2004 has the most claims, mostly followed by decreasing claims every year after
 
@@ -236,7 +236,7 @@ ods pdf close;
 
 ## The Final Report
 
-![FinalReport1.PNG](attachment:FinalReport1.PNG)
-![FinalReport2.PNG](attachment:FinalReport2.PNG)
-![FinalReport3.PNG](attachment:FinalReport3.PNG)
-![FinalReport4.PNG](attachment:FinalReport4.PNG)
+![FinalReport1.PNG](data/FinalReport1.PNG)
+![FinalReport2.PNG](data/FinalReport2.PNG)
+![FinalReport3.PNG](data/FinalReport3.PNG)
+![FinalReport4.PNG](data/FinalReport4.PNG)
