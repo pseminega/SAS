@@ -3,7 +3,7 @@
 
 ## Introduction
 
-The TSA is an agency of the US Department of Homeland Security that has authority over the security of the traveling public. Claims are filed if travelers are injured or their property is lost or damaged during the screening process at an airport. The data in the CSV file <font color=blue>__TSAClaims2002_2017.csv__</font> represents the data for claims filed between 2002 and 2017.
+The TSA is an agency of the US Department of Homeland Security that has authority over the security of the traveling public. Claims are filed if travelers are injured or their property is lost or damaged during the screening process at an airport. The data in the CSV file ![file](data/TSAClaims2002_2017.csv) represents the data for claims filed between 2002 and 2017.
 This file was created from publicly available data from the TSA and the Federal Aviation Administration, or FAA. The TSA data has information about claims and the FAA data has information about USA airport facilities. The case study data was created by concatenating individual TSA airport claims data, removing some extra columns, and then joining the concatenated TSA claims data with the FAA airport facilities data. The TSA Claims 2002 to 2017 CSV file has 14 columns and over 220,000 rows.
 
 
@@ -14,14 +14,49 @@ This file was created from publicly available data from the TSA and the Federal 
 *  **Incident_Date** - The date the claim was filed
 *  **Airport_Code** - The code where the incident occurred
 *  **Airport_Name** - The name where the incident occurred
-*  **Claim_Type** - Has a type of claim. There are 14 valid claim types
-*  **Claim_Site** - Where the claim occured. There are 8 valid values for claims site.
-*  **Item_Category** - has a type of items in the claim. This column will not be used in our analysis
-*  **Close_Amount** - Dollar amount of the settlement
-*  **Disposition** - Final settlement for the claim
-*  **StateName** - Full name of the State of the Airport
-*  **State** - 2 Letter State code of the Airport
-*  **County** - County where the airport is located
+*  **Claim_Type** - Has a type of claim. There are 14 valid claim types:
+   * Bus Terminal
+   * Complaint
+   * Compliment
+   * Employee Loss(MPCECA)
+   * Missed Flight
+   * Motor Vehicle
+   * Not Provided
+   * Passenger Property Loss
+   * Passenger Theft
+   * Personal Injury
+   * Property Damage
+   * Property Loss
+   * Unknown
+   * Wrongful Death 
+   
+*  **Claim_Site** - Where the claim occured. There are 8 valid values for claims site
+   * Bus Station
+   * Checked Baggage
+   * Checkpoint
+   * Motor Vehicle
+   * Not Provided
+   * Other
+   * Pre-Check
+   * Unknown
+   
+*  **Item_Category** - Has a type of items in the claim. This column will not be used in our analysis
+*  **Close_Amount** - The dollar amount of the settlement
+*  **Disposition** - The Final settlement for the claim. There are 10 valid values for Disposition:
+   * *Insufficient
+   * Approve in Full
+   * Closed:Canceled
+   * Closed:Contractor Claim
+   * Deny
+   * In Review
+   * Pending Payment
+   * Received 
+   * Settle
+   * Unknown
+   
+*  **StateName** - The full name of the State of the Airport
+*  **State** - The 2 Letter State code of the Airport
+*  **County** - The county where the airport is located
 *  **City** - The city where the airport is located
     
 
@@ -64,7 +99,7 @@ run;
 ![ProcContent1.PNG](data/ProcContent1.PNG)
 ![ProcContent2.PNG](data/ProcContent2.PNG)
 
-** Observations** : Here we can see that the Date_Received and Incident_Date columns are formatted as BEST 12 when they should be in a Date format.Close_Amount is also formatted as BEST 12 , we will format it as dollar.
+**Observations**: Here we can see that the Date_Received and Incident_Date columns are formatted as BEST 12 when they should be in a Date format.Close_Amount is also formatted as BEST 12 , we will format it as dollar.
 
 ```sas
 proc freq data=tsa.ClaimsImport;
@@ -158,8 +193,6 @@ format Close_Amount dollar20.2 Date_Received Incident_Date date9.;
 drop county city;
 run;
 
-*run proc freq to check if the transformations are correct. We can see the distinct values in the columns Date_Received, Incident_Date and CLaim follow our business requirements
-, we can see how many date issues(4241), and changes made;
 proc freq data=tsa.Claims_Cleaned order=freq;
      tables Claim_Site
             Disposition
@@ -167,7 +200,7 @@ proc freq data=tsa.Claims_Cleaned order=freq;
             Date_Issues / nopercent nocum;
 run;
 
-%let statename=Hawaii;
+%let statename=California;
 %let outpath=/home/pierreseminega0/ECRB94/output;
 ods pdf file="&outpath/ClaimsReport.pdf" style=meadow pdftoc=1;
 ods noproctitle;
@@ -222,7 +255,15 @@ table Claim_Type Claim_Site Disposition / nocum nopercent;
 where StateName = "&statename" and Date_issues is null;
 run;
 title;
+```
 
+
+
+![CaliforniaClaimsTypesSitesDisposition1.PNG](data/CaliforniaClaimsTypesSitesDisposition1.PNG)
+![CaliforniaClaimsTypesSitesDisposition2.PNG](data/CaliforniaClaimsTypesSitesDisposition2.PNG)
+
+
+```sas
 /*d.What is the mean, minimum, maximum and sum of Close_Amount for the selected state? Round to the nearest integer.*/
 ods proclabel "&statename Close Amount Statistics";
 title "Close Amount Statistics for &statename";
@@ -233,6 +274,8 @@ run;
 title;
 ods pdf close;
 ```
+
+![CaliforniaCloseAmount.PNG](data/CaliforniaCloseAmount.PNG)
 
 ## The Final Report
 
