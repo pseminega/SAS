@@ -1,9 +1,9 @@
 
-# Analyze United States TSA Claims Data
+# Analyzing United States TSA Claims Data
 
 ## Introduction
 
-The TSA is an agency of the US Department of Homeland Security that has authority over the security of the traveling public. Claims are filed if travelers are injured or their property is lost or damaged during the screening process at an airport. The data in the CSV file <a href="/data/TSAClaims2002_2017.csv">TSAClaims2002_2017.csv</a> represents the data for claims filed between 2002 and 2017.
+The TSA is an agency of the US Department of Homeland Security that has authority over the security of the traveling public. Claims are filed if travelers are injured or their property is lost or damaged during the screening process at an airport. The data in the CSV file <a href="data/TSAClaims2002_2017.csv">TSAClaims2002_2017.csv</a> represents the data for claims filed between 2002 and 2017.
 This file was created from publicly available data from the TSA and the Federal Aviation Administration, or FAA. The TSA data has information about claims and the FAA data has information about USA airport facilities. The case study data was created by concatenating individual TSA airport claims data, removing some extra columns, and then joining the concatenated TSA claims data with the FAA airport facilities data. The TSA Claims 2002 to 2017 CSV file has 14 columns and over 220,000 rows.
 
 
