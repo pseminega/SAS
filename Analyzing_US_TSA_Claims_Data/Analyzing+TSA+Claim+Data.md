@@ -3,7 +3,7 @@
 
 ## Introduction
 
-The TSA is an agency of the US Department of Homeland Security that has authority over the security of the traveling public. Claims are filed if travelers are injured or their property is lost or damaged during the screening process at an airport. The data in the CSV file ![file](data/TSAClaims2002_2017.csv) represents the data for claims filed between 2002 and 2017.
+The TSA is an agency of the US Department of Homeland Security that has authority over the security of the traveling public. Claims are filed if travelers are injured or their property is lost or damaged during the screening process at an airport. The data in the CSV file <a href="/data/TSAClaims2002_2017.csv">TSAClaims2002_2017.csv</a> represents the data for claims filed between 2002 and 2017.
 This file was created from publicly available data from the TSA and the Federal Aviation Administration, or FAA. The TSA data has information about claims and the FAA data has information about USA airport facilities. The case study data was created by concatenating individual TSA airport claims data, removing some extra columns, and then joining the concatenated TSA claims data with the FAA airport facilities data. The TSA Claims 2002 to 2017 CSV file has 14 columns and over 220,000 rows.
 
 
@@ -90,12 +90,16 @@ run;
 /* Preview the first 20 rows */
 proc print data=tsa.ClaimsImport (obs=20);
 run;
+```
 
+![First20Rows.PNG](data/First20Rows.PNG)
+
+```sas
+/* Explore the contents of the table*/
 proc contents data=tsa.ClaimsImport varnum;
 run;
 ```
 
-![First20Rows.PNG](data/First20Rows.PNG)
 ![ProcContent1.PNG](data/ProcContent1.PNG)
 ![ProcContent2.PNG](data/ProcContent2.PNG)
 
@@ -117,20 +121,37 @@ proc print data=tsa.ClaimsImport;
 run;
 ```
 
-**Observations**: In Claims_Site we have a hyphen in missing values that need to be converted to unknown. The Disposition column has the same issue and also see spelling issues.Closed Cancelled should not have a space between the words. Closed Contractor claim is missing a C for 73 rows at the bottom. Claim_Type has also the issue of the missing values.
+**Observations**: In Claims_Site we have a hyphen in missing values that need to be converted to "unknown". The Disposition column has the same issue and we also see spelling issues.Closed Cancelled should not have a space between the words. "Closed Contractor" claim is missing a C for 73 rows at the bottom. Claim_Type has also the issue of the missing values.
 We can also see a few categories that have multiple values separated by a slash. In the Date_Received and Incident_Date column, multiple rows have years after 2017 and have also many missing dates. Date_Received should always be after the Incident_Date. All these issues will be addressed in the preparing data stage.
 
 ## Prepare the data
 
+The following data transformation steps will be performed:
+
+ 1. Duplicate records will be removed. 
+ 2. All missing and '-' values in the columns Claim_Type, Claim_Site and Disposition will be changed to "Unknown"
+ 3. If the claim is separated into two types by a slash, Claim_Type is the first type.
+ 4. All StateName will be converted to proper case and State values to uppercase.
+ 5. We will introduce a new column named Date_Issues with a value of "Needs Review" to indicate that a row has a date issue. Date issues consist of the following:
+    - A missing value for Incident_Date or Date_Received
+    - An Incident_Date or Date_Received value out of the predefined year range of 2002 through 2017
+    - An Incident_Date value that occurs after the Date_Received value
+ 7. The County and City columns will not be included in the output table
+ 8. Currency will be permanently formatted with a dollar sign and include two decimal points.
+ 9. All dates will be permanently formatted in the style 01JAN2000.
+ 10. Permanent labels will be assigned to columns by replacing any underscore with a space. 
+ 11. Final data will be sorted in ascending order by Incident_Date
+ 
+
 ```sas
 /* Prepare the data */
+
 /*1. Remove duplicate rows */
 
 proc sort data=tsa.ClaimsImport
           out=tsa.Claims_NoDups noduprecs;
  by _All_;
 run;
-/*Observations: in the log we can see that 5 duplicate rows were removed.*/
 
 /*2. Sort the data by ascending Incident_Date */
 
@@ -208,10 +229,18 @@ ods noproctitle;
 
 ## Overall Analysis
 
+The following questions will be answered:
+1. How many data issues are in the overall data?
+2. How many claims per year of Incident_Date are in the overall data?
+3. For a selected State, what are the frequency values for Claim_Type, Claim_Site and Disposition?
+  - What is the mean, minimum, maximum and sum of Close_Amount for the selected state? Rounded to the nearest integer
+
+   
+
 ```sas
 /* OVERALL ANALYSIS */
 
-/*1. How many data issues are in the overall data */    4241 issues
+/*1. How many data issues are in the overall data */ 
 ods proclabel "Overall Date Issues";
 title "Overall Date Issues in the Data";
 proc freq data=tsa.Claims_Cleaned;
@@ -223,7 +252,7 @@ title;
 ![DateIssues.PNG](data/DateIssues.PNG)
 
 ```sas
-/*2. How many claims per year of Incident_Date are in the overall data? Be sure to include a plot.*/
+/*2. How many claims per year of Incident_Date are in the overall data?*/
 
 ods graphics on;
 ods proclabel "Overall Claims by Year";
@@ -244,7 +273,7 @@ title;
 ```sas
 /* SPECIFIC STATE ANALYSIS */
 
-/*3. Lastly, a user should be able to dynamically input a specific state value  and answer the following: */
+/3.
 /*a. What are the frequency values for Claim_Type for the selected state?*/
 /*b. What are the frequency values for Claim_Site for the selected state?*/
 /*c. What are the frequency values for Disposition for the selected state?*/
@@ -264,7 +293,7 @@ title;
 
 
 ```sas
-/*d.What is the mean, minimum, maximum and sum of Close_Amount for the selected state? Round to the nearest integer.*/
+/*d.What is the mean, minimum, maximum and sum of Close_Amount for the selected state? Rounded to the nearest integer.*/
 ods proclabel "&statename Close Amount Statistics";
 title "Close Amount Statistics for &statename";
 proc means data=tsa.Claims_Cleaned min mean max sum maxdec=0;
@@ -277,7 +306,9 @@ ods pdf close;
 
 ![CaliforniaCloseAmount.PNG](data/CaliforniaCloseAmount.PNG)
 
-## The Final Report
+## The Final Report  
+
+The final report in pdf format: <a href="data/ClaimsReport.pdf">ClaimsReport.pdf</a>
 
 ![FinalReport1.PNG](data/FinalReport1.PNG)
 ![FinalReport2.PNG](data/FinalReport2.PNG)
