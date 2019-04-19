@@ -153,7 +153,7 @@ data cleaned_tourism;
      if series=".." then Series="";
      ConversionType=scan(Country,-1," ");
      if _2014=".." then _2014=".";
-     if ConversationType = "Mn" then do;
+     if ConversionType = "Mn" then do;
          if _2014 ne "." then Y2014 = input(_2014,16.) * 1000000;
            else Y2014=.;
          Category=cat(scan(country,1,'-','r'),' -US\$');
